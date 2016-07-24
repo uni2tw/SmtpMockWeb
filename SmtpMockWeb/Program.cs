@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using SmtpMockWeb;
+using Microsoft.AspNet.SignalR;
+using nDumbster.SmtpMockServer;
 using SmtpMockWeb.Code;
 using SmtpMockWeb.Owins;
+using SmtpMockWeb.WebLib;
 
-namespace Lunchking.SearchEngineWeb
+namespace SmtpMockWeb
 {
     class Program
     {
@@ -59,16 +61,14 @@ namespace Lunchking.SearchEngineWeb
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Ioc.Get<ICommonLog>().Log(e.ExceptionObject.ToString());
-            Utility.SendNotifyMail("SearchEngine was terminated.",
-                "<h2>SearchEngine was terminated.</h2><p>" + e.ExceptionObject.ToString() + "</p>");
+            Utility.SendNotifyTerminatedMail(e.ExceptionObject as Exception);
             Environment.Exit(0);
         }
 
         private static void MainTask()
         {
-
             IServer server = Ioc.Get<IServer>();
-            ICommonLog logger = Ioc.Get<ICommonLog>();
+            SystemConfig config = Ioc.Get<SystemConfig>();
 
             if (Environment.UserInteractive == false)
             {
@@ -81,6 +81,16 @@ namespace Lunchking.SearchEngineWeb
             }
             else
             {
+                MailMessageWrapper.Init(Path.Combine(Helper.GetCurrentDirectory(), "mail"));
+                var smtpServer = SimpleSmtpServer.Start(
+                    config.SmtpMockServer.HostIp,
+                    config.SmtpMockServer.Port);
+                smtpServer.OnMessageReceived += delegate (MailMessageWrapper mmp)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<MessageHub>();
+                    hub.Clients.All.Send(mmp.ToString());
+                };
+
                 var service = new ShellService();
                 service.Start();
 
@@ -95,6 +105,7 @@ namespace Lunchking.SearchEngineWeb
                 } while (key != ConsoleKey.Q);
                 service.Stop();
 
+                smtpServer.Stop();
                 Environment.Exit(0);
             }
         }
