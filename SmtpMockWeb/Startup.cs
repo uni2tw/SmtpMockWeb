@@ -26,7 +26,7 @@ namespace SmtpMockWeb
 
             //app.UseWebApi(new WebApiConfig());
 
-            //app.MapSignalR();
+            app.MapSignalR();
 
             //app.Use(new Func<AppFunc, AppFunc>(ignoredNextApp => (AppFunc)Invoke));
         }
