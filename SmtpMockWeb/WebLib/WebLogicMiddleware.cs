@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
+using nDumbster.SmtpMockServer;
 using SmtpMockWeb.Code;
 
 namespace SmtpMockWeb.WebLib
@@ -23,9 +24,25 @@ namespace SmtpMockWeb.WebLib
                 string msg = context.Request.Query["m"];
                 var hub = GlobalHost.ConnectionManager.GetHubContext<MessageHub>();
                 hub.Clients.All.Send(String.Format("{0} {1}",
-                    DateTime.Now.ToString("HH:mm:ss"), msg));
+                    DateTime.Now.ToString("HH:mm:ss"), msg), "");
                 context.Response.Write("broadcast test");
 
+            }
+            if (context.Request.Path.Value == "/view")
+            {
+                string fid = context.Request.Query["fid"];
+                string mailFilePath = Path.Combine(MailMessageWrapper.MailFolder, fid);
+                if (File.Exists(mailFilePath))
+                {
+                    context.Response.Headers["Content-Type"] = "message/rfc822"; //"application/octet-stream";
+                    context.Response.Headers["Content-Disposition"] =
+                        "attachment; filename=\"" + fid + "\"";
+                    context.Response.Write(File.ReadAllBytes(mailFilePath));
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                }
             }
             if (context.Request.Path.Value == "/")
             {                
@@ -40,13 +57,15 @@ namespace SmtpMockWeb.WebLib
 <script src='/signalr/hubs'></script>
 <script type='text/javascript'>
 $(document).ready(function() {    
-    function addMessage(msg) {
-        $('#container').prepend($('<div></div>').addClass('message').text(msg));
+    function addMessage(msg, link) {
+        var elemLink = $('<a></a>').attr('href', link).attr('target','_blank').text(msg);
+        var messageRow = $('<div></div>').addClass('message').append(elemLink);
+        $('#container').prepend(messageRow);
     }
     var connection = $.hubConnection();
     var msgHub = connection.createHubProxy('MessageHub');
-    msgHub.on('Send', function(message) {
-        addMessage(message);
+    msgHub.on('Send', function(message, link) {
+        addMessage(message, link);
     });
     connection.start()
         .done(function(){ 

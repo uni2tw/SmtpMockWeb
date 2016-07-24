@@ -88,7 +88,7 @@ namespace SmtpMockWeb
                 smtpServer.OnMessageReceived += delegate (MailMessageWrapper mmp)
                 {
                     var hub = GlobalHost.ConnectionManager.GetHubContext<MessageHub>();
-                    hub.Clients.All.Send(mmp.ToString());
+                    hub.Clients.All.Send(mmp.ToString(), "/view?fid=" + mmp.FileName);
                 };
 
                 var service = new ShellService();

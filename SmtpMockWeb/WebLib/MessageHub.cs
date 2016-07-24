@@ -4,9 +4,9 @@ namespace SmtpMockWeb.WebLib
 {
     public class MessageHub : Hub
     {
-        public void Send(string message)
+        public void Send(string message, string link)
         {
-            Clients.All.broadcastMessage(message);
+            Clients.All.broadcastMessage(message, link);
         }
     }
 }
