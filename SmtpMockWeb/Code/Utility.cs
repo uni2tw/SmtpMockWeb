@@ -9,12 +9,18 @@ namespace SmtpMockWeb.Code
         private static ICommonLog logger = Ioc.Get<ICommonLog>();
         public static void SendNotifyStartingMail()
         {
-            Utility.SendNotifyMail("SearchEngine was starting.", "<h2>SearchEngine was starting.</h2>");
+            Utility.SendNotifyMail(Helper.GetProductName() + " was starting.", "<h2>SearchEngine was starting.</h2>");
         }
 
         public static void SendNotifyStoppedMail()
         {
-            Utility.SendNotifyMail("SearchEngine was stopped.", "<h2>SearchEngine was stopped.</h2>");
+            Utility.SendNotifyMail(Helper.GetProductName() + " was stopped.", "<h2>SearchEngine was stopped.</h2>");
+        }
+
+        public static void SendNotifyTerminatedMail(Exception ex)
+        {
+            Utility.SendNotifyMail(Helper.GetProductName() + " was terminated.",
+                "<h2>" + Helper.GetProductName() + " was terminated.</h2><p>" + ex.ToString() + "</p>");
         }
 
         public static void SendNotifyMail(string subject, string body)

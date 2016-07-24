@@ -88,5 +88,17 @@ namespace SmtpMockWeb.Code
             return String.Format("{0} {1}.{2}",
                 fvi.ProductName, fvi.FileMajorPart, fvi.FileMinorPart);
         }
+
+        private static string _productName;
+        public static string GetProductName()
+        {
+            if (_productName == null)
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                _productName = fvi.ProductName;
+            }
+            return _productName;
+        }
     }
 }

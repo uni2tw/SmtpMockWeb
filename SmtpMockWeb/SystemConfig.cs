@@ -16,6 +16,7 @@ namespace SmtpMockWeb
         public int Port { get; set; }
         public string RemoteIp { get; set; }
         public SmtpSetting Smtp { get; set; }
+        public SmtpMockServerSetting SmtpMockServer { get; set; }
 
         public void Update()
         {
@@ -31,5 +32,11 @@ namespace SmtpMockWeb
         public string From { get; set; }
         public string To { get; set; }
         public bool Enabled { get; set; }
+    }
+
+    public class SmtpMockServerSetting
+    {
+        public string HostIp { get; set; }
+        public int Port { get; set; }
     }
 }

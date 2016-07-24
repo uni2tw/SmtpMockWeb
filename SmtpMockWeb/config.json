@@ -1,6 +1,10 @@
 ﻿{
   "Port": 1768,
   "RemoteIp": "192.168.1.60",
+  "SmtpMockServer": {
+    "Port": 25,
+    "HostIp": "127.0.0.1"
+  },
   "Smtp": {
     //"Host": "10.15.0.101",
     "Host": "localhost",
