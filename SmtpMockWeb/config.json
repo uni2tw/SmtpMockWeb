@@ -1,0 +1,11 @@
+﻿{
+  "Port": 1768,
+  "RemoteIp": "192.168.1.60",
+  "Smtp": {
+    //"Host": "10.15.0.101",
+    "Host": "localhost",
+    "From": "admin@17life.com",
+    "To": "unicorn@17life.com",
+    "Enabled": false
+  }
+}
