@@ -212,8 +212,8 @@ namespace nDumbster.SmtpMockServer
 				try
 				{
                     // Open a listener to accept client connection
-                    //tcpListener = new TcpListener(IPAddress.Any, Port);                    
-                    tcpListener = new TcpListener(IPAddress.Parse(HostIp), Port);
+                    tcpListener = new TcpListener(IPAddress.Any, Port);                    
+                    //tcpListener = new TcpListener(IPAddress.Parse(HostIp), Port);				    
                     tcpListener.Start();
 				}
 				catch(Exception e)

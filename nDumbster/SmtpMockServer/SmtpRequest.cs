@@ -223,15 +223,16 @@ namespace nDumbster.SmtpMockServer
 				}
 				else if (SmtpActionType.QUIT == action)
 				{
-					if (SmtpState.QUIT == state)
-					{
-						response = new SmtpResponse(221, "localhost nDumbster service closing transmission channel", SmtpState.CONNECT);
-					}
-					else
-					{
-						response = new SmtpResponse(503, "Bad sequence of commands: " + action, this.state);
-					}
-				}
+                    response = new SmtpResponse(221, "localhost nDumbster service closing transmission channel", SmtpState.CONNECT);
+                    //if (SmtpState.QUIT == state)
+                    //{
+                    //	response = new SmtpResponse(221, "localhost nDumbster service closing transmission channel", SmtpState.CONNECT);
+                    //}
+                    //else
+                    //{
+                    //	response = new SmtpResponse(503, "Bad sequence of commands: " + action, this.state);
+                    //}
+                }
 				else
 				{
 					response = new SmtpResponse(500, "Command not recognized", this.state);
