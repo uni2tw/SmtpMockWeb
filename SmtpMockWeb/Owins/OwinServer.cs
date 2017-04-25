@@ -40,16 +40,14 @@ namespace SmtpMockWeb.Owins
             List<string> ips = Helper.GetAllIps();
             //logger.Log("web server startup at port " + config.Port);
             StartOptions options = new StartOptions();
-
+            StartUrl = String.Format("http://localhost:{0}", config.Port);
             if (Helper.IsUserAdministrator())
             {
-                StartUrl = String.Format("http://{0}:{1}", config.RemoteIp, config.Port);
-                options.Urls.Add(StartUrl);
+                options.Urls.Add("http://*:" + config.Port);
             }
             else
             {
-                StartUrl = "http://localhost:" + config.Port;
-                options.Urls.Add(StartUrl);
+                options.Urls.Add("http://localhost:" + config.Port);
             }
             logger.Log("web server start to listen " + StartUrl);
             try

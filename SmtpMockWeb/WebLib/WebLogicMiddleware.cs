@@ -44,6 +44,22 @@ namespace SmtpMockWeb.WebLib
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 }
             }
+            if (context.Request.Path.Value == "/mht")
+            {
+                string fid = context.Request.Query["fid"];
+                string mailFilePath = Path.Combine(MailMessageWrapper.MailFolder, fid);
+                if (File.Exists(mailFilePath))
+                {
+                    context.Response.Headers["Content-Type"] = "application/octet-stream";
+                    context.Response.Headers["Content-Disposition"] =
+                        "attachment; filename=\"" + fid + ".mht\"";
+                    context.Response.Write(File.ReadAllBytes(mailFilePath));
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                }
+            }
             if (context.Request.Path.Value == "/")
             {                
                 if (context.Response.StatusCode == (int)HttpStatusCode.OK)
@@ -55,17 +71,40 @@ namespace SmtpMockWeb.WebLib
 <script src='https://code.jquery.com/jquery-1.12.4.min.js' integrity='sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=' crossorigin='anonymous'></script>
 <script src='https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.1.min.js'></script>
 <script src='/signalr/hubs'></script>
+<style>
+.cell-text {
+    display:inline-block;
+    color:#5252e0;
+}
+.cell-link {
+    display:inline-block;
+}
+.cell-icon {
+    display:inline-block;
+    margin-left:20px;
+}
+</style>
 <script type='text/javascript'>
 $(document).ready(function() {    
-    function addMessage(msg, link) {
-        var elemLink = $('<a></a>').attr('href', link).attr('target','_blank').text(msg);
-        var messageRow = $('<div></div>').addClass('message').append(elemLink);
+    function addMessage(msg, link, link2) {
+        console.log(msg + ', ' + link + ', ' + link2);
+        var elemLink = $('<a></a>').attr('href', link).attr('target','_blank');
+        var elemLink2 = $('<a></a>').attr('href', link2).attr('target','_blank');
+        var iconEml = $('<img />').attr('src','http://icons.iconarchive.com/icons/fatcow/farm-fresh/24/file-extension-eml-icon.png')
+            .appendTo(elemLink);
+        var iconMht = $('<img />').attr('src','http://icons.iconarchive.com/icons/tatice/cristal-intense/24/Internet-Explorer-icon.png')
+            .appendTo(elemLink2);
+        var cellText = $('<span></span>').addClass('cell-text').append(msg);
+        var cellLink = $('<span></span>').addClass('cell-icon').append(elemLink);
+        var cellLink2 = $('<span></span>').addClass('cell-icon').append(elemLink2);
+        var messageRow = $('<div></div>').addClass('message')
+            .append(cellText).append(cellLink).append(cellLink2);
         $('#container').prepend(messageRow);
     }
     var connection = $.hubConnection();
     var msgHub = connection.createHubProxy('MessageHub');
-    msgHub.on('Send', function(message, link) {
-        addMessage(message, link);
+    msgHub.on('Send', function(message, link, link2) {
+        addMessage(message, link, link2);
     });
     connection.start()
         .done(function(){ 
