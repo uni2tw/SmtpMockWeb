@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="SmtpMockServer\MailMessageExtensions.cs" />
     <Compile Include="SmtpMockServer\MailMessageWrapper.cs" />
+    <Compile Include="SmtpMockServer\SimpleSmtpClicent.cs" />
     <Compile Include="SmtpMockServer\SimpleSmtpServer.cs">
       <SubType>Code</SubType>
     </Compile>
