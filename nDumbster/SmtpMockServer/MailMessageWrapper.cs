@@ -79,7 +79,7 @@ namespace nDumbster.SmtpMockServer
                 sendTime = DateTime.Parse(sm.Headers["Date"]);
             }
 
-            var contentType = new System.Net.Mime.ContentType(sm.Headers["Content-Type"]);
+            var contentType = new System.Net.Mime.ContentType(sm.Headers["Content-Type"] ?? "text/plain");
             if (sm.Headers["Content-Transfer-Encoding"] != null &&
                 sm.Headers["Content-Transfer-Encoding"].Equals("base64", StringComparison.OrdinalIgnoreCase))
             {
