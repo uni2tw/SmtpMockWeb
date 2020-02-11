@@ -53,12 +53,21 @@ namespace nDumbster.SmtpMockServer
 			// Send initial response
 			SendResponse(output, smtpResponse);
 			smtpState = smtpResponse.NextState;
-
+		    
             List<SmtpMessage> msgList = new List<SmtpMessage>();
 			SmtpMessage msg = new SmtpMessage();            
 			while (smtpState != SmtpState.CONNECT)
 			{
-				string line = input.ReadLine();
+                string line = null;
+                try
+                {
+                    line = input.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("client讀取失敗," + ex);
+                    break;
+                }
 
 				if (line == null)
 				{
@@ -92,8 +101,13 @@ namespace nDumbster.SmtpMockServer
 			        msg.HostName = request.Params;
 			    }
 			}
-
-            _socket.Close();
+            try
+            {
+                _socket.Close();
+            } catch (Exception ex)
+            {
+                Console.WriteLine("client關閉失敗," + ex);
+            }
             _server.TriggerClientDisconnected();
             SimpleSmtpServer.ReceivedEmail.AddRange(msgList);
 		}

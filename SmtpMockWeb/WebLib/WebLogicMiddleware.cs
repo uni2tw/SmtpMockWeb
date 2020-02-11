@@ -64,11 +64,13 @@ namespace SmtpMockWeb.WebLib
             {                
                 if (context.Response.StatusCode == (int)HttpStatusCode.OK)
                 {
+
                     context.Response.Headers["Content-Type"] = "text/html; charset=UTF-8";
                     context.Response.Write(
 @"<html>
 <head>
-<script src='https://code.jquery.com/jquery-1.12.4.min.js' integrity='sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=' crossorigin='anonymous'></script>
+
+<script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
 <script src='https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.1.min.js'></script>
 <script src='/signalr/hubs'></script>
 <style>
